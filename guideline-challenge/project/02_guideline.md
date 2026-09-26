@@ -1,6 +1,6 @@
 # Annotation guideline — Traffic Light State & Ego-Relevance
 
-**Version:** v3
+**Version:** v4
 
 ## 1. Objective + scope
 
@@ -32,9 +32,12 @@
 
 Cấu trúc taxonomy gồm 1 Class duy nhất và 3 thuộc tính (Attributes) bắt buộc:
 
+- `undefined` là giá trị dùng khi trường attribute chưa có giá trị trong dữ liệu đầu vào. Không dùng `undefined` thay cho quyết định khi đã xem ảnh: màu không rõ dùng `off_or_unk`, làn không rõ dùng `ambiguous`, hình dạng không rõ dùng `other`.
+
 ### Class: `traffic_light` (Shape: rectangle)
 
 ### Attribute 1: `state` (Trạng thái phát sáng của đèn)
+- `undefined`: Dữ liệu đầu vào chưa có giá trị `state`.
 - `red`: Đèn đang bật bóng đỏ (yêu cầu dừng).
 - `yellow`: Đèn đang bật bóng vàng (chuẩn bị dừng / chuyển pha).
 - `green`: Đèn đang bật bóng xanh (được phép di chuyển).
@@ -43,6 +46,7 @@ Cấu trúc taxonomy gồm 1 Class duy nhất và 3 thuộc tính (Attributes) b
 
 ### Attribute 2: `relevance` (Độ liên quan đối với làn xe chủ)
 
+- `undefined`: Dữ liệu đầu vào chưa có giá trị `relevance`.
 - `ego_lane`: Đèn điều khiển làn đang đi (xe đi thẳng, đi rẽ,...).
 - `other_lane`: Đèn điều khiển một làn phương tiện đường bộ khác với làn xe chủ, ví dụ đèn rẽ trái khi xe chủ đi thẳng.
 - `ambiguous`: Không rõ làn (mất vạch kẻ đường, xe đang đè vạch chuyển làn, góc chụp quá xéo hoặc nhiều đèn san sát không rõ tương quan). Tuyệt đối không đoán mò.
@@ -50,10 +54,10 @@ Cấu trúc taxonomy gồm 1 Class duy nhất và 3 thuộc tính (Attributes) b
 
 ### Attribute 3: `shape` (Hình dạng tín hiệu)
 
+- `undefined`: Dữ liệu đầu vào chưa có giá trị `shape`.
 - `circle`: Bóng đèn tròn đặc thông thường (kể cả khi đèn tắt nhưng mặt kính tròn trơn).
 - `arrow`: Tín hiệu hình mũi tên chỉ hướng (rẽ trái/phải, đi thẳng; kể cả khi đèn tắt nhưng thấy rõ khuôn mũi tên).
 - `other`: Dạng khác (đèn đếm giây, chữ X, hoặc bị lóa/che khuất không rõ hình dạng tròn hay mũi tên).
-- *Default:* `circle`.
 
 ## 5. Inclusion / exclusion
 
@@ -94,6 +98,7 @@ Quy định chuẩn hóa 4 mức quyết định để đảm bảo thể hiện
 - Gán nhãn 20 ảnh có đèn giao thông từ tập S2TLD 720x1280: [Kaggle dataset](https://www.kaggle.com/datasets/sovitrath/s2tld-720x1280-traffic-light-detection-xml-format/data).
 - Mỗi ảnh được gán độc lập dưới dạng `Shape`; không áp dụng quy tắc track theo thời gian.
 - Export CVAT ở định dạng Datumaro hoặc CVAT XML. Mỗi nhãn `traffic_light` phải có đủ `state`, `relevance` và `shape`.
+- Giá trị theo contract: `state` (`undefined`, `red`, `yellow`, `green`, `off_or_unk`), `relevance` (`undefined`, `ego_lane`, `other_lane`, `ambiguous`), `shape` (`undefined`, `circle`, `arrow`, `other`).
 - Kết quả quyết định phải thể hiện được: LABEL (`traffic_light` cùng đủ attributes), IGNORE (không tạo box), UNKNOWN (`state = off_or_unk`) hoặc ESCALATE (`relevance = ambiguous`).
 
 ## 9. Examples
