@@ -105,11 +105,7 @@ Bảng ví dụ tham chiếu từ các ảnh trong tập `example` và `calibrat
 
 | sample_id | Thấy gì | Expected output | Rule áp dụng |
 |---|---|---|---|
-| `LISA01` | Cụm đèn treo giữa đường, bóng tròn màu xanh sáng rõ, thẳng làn xe đang đi | Box ôm cụm đèn, `state=green`, `relevance=ego_lane`, `shape=circle` | Mục 1, 3, 4 (Đèn chính làn xe chủ ban ngày) |
-| `BDD02` | Cột đèn bên lề phải tại giao lộ thành phố, đèn đỏ hình tròn đang bật | Box ôm vỏ đèn, `state=red`, `relevance=ego_lane`, `shape=circle` | Mục 3, 4 (Đèn đỏ điều khiển hướng đi làn xe) |
-| `BDD04` | Đầu đèn treo bên trái có mũi tên xanh rẽ trái trong khi làn xe chủ đi thẳng | Box ôm đèn, `state=green`, `relevance=other_lane`, `shape=arrow` | Mục 4 (Đèn làn rẽ khác làn xe chủ) |
-| `BDD10` | Nút giao nhiều cột đèn, 1 đèn cho làn xe chủ, 1 đèn cho làn rẽ đối diện | 2 boxes độc lập: 1 box `relevance=ego_lane`, 1 box `relevance=other_lane` | Mục 2 (Tách instance riêng biệt) |
-| `BDD11` | Cột đèn rẽ có tán cây che một góc nắp che nắng nhưng thấy rõ bóng đỏ | Box ôm sát phần vỏ nhìn thấy, `state=red`, `relevance=other_lane`, `shape=circle` | Mục 6 (Xử lý che khuất bán phần) |
+
 
 ## 10. Common mistakes
 
