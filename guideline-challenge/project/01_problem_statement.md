@@ -5,27 +5,33 @@ mới là xong.
 
 ## Bài toán
 
-TODO — một câu: road element nào, trong tình huống nào, khó ở đâu. "Label traffic signs" là quá rộng; "hierarchical
-sign taxonomy cho biển nhỏ/xa/bị che" là đủ cụ thể.
+Gán nhãn Bounding Box 2D và Attributes cho các đầu đèn giao thông (Traffic Lights) tại các giao lộ phức tạp có nhiều đầu đèn song song, giải quyết điểm khó về phân định màu tín hiệu và độ liên quan trực tiếp đến làn đường của xe chủ trong điều kiện ánh sáng kém.
 
 ## Downstream contract
 
-1. **Downstream task / model / user là ai?** TODO
-2. **Output annotation nào thực sự cần?** (geometry, class, attribute nào) TODO
-3. **Failure nào gây hậu quả lớn nhất?** (đây sẽ là decision `critical` trong gold) TODO
-4. **Khi ambiguity không resolve được, ai / ở đâu là escalation path?** TODO
+1. **Downstream task / model / user là ai?** Module Lập kế hoạch hành vi (Behavior Planning) và Phanh khẩn cấp tự động (AEB) của hệ thống lái tự động Cấp độ 3/4.
+2. **Output annotation nào thực sự cần?**
+   - Geometry: 2D Bounding Box ôm sát phần vỏ thấy được của đầu đèn.
+   - Class: `traffic_light`
+   - Attributes: `state` (`red` / `yellow` / `green` / `off_or_unk`), `relevance` (`ego_lane` / `other_lane` / `ambiguous`), `shape` (`circle` / `arrow` / `other`).
+3. **Failure nào gây hậu quả lớn nhất?**
+   - Gán nhãn `relevance = ego_lane` cho đèn rẽ trái đang đỏ trong khi xe chủ đi thẳng đang có đèn xanh riêng $\rightarrow$ Xe phanh gấp giữa giao lộ gây tai nạn phía sau.
+   - Bỏ sót (Missed detection) hoặc gán `relevance = other_lane` cho đèn `ego_lane` đang đỏ $\rightarrow$ Xe lao vào giao lộ gây tai nạn trực diện (Critical Escape).
+4. **Khi ambiguity không resolve được, ai / ở đâu là escalation path?** Khi không đủ chứng cứ thị giác để xác định đèn điều khiển làn nào, annotator bắt buộc gán attribute `relevance = ambiguous`. Hệ thống downstream khi nhận nhãn `ambiguous` sẽ tự động kích hoạt quy tắc an toàn (giảm tốc và tăng khoảng cách an toàn).
 
 ## Scope
 
-- **Trong scope (bắt buộc label):** TODO
-- **Ngoài scope (ignore):** TODO
-- **Geometry tolerance:** TODO (ví dụ "box ôm phần vỏ đèn nhìn thấy, lệch ≤ 2 px mỗi cạnh là đạt")
+- **Trong scope (bắt buộc label):** Tất cả các đầu đèn giao thông phát sáng hoặc tắt dành cho phương tiện giao thông đường bộ có mặt đèn hướng về phía xe chủ.
+- **Ngoài scope (ignore):** Đèn giao thông dành riêng cho người đi bộ (biểu tượng hình người), đèn giao thông cho tàu hỏa/xe bus làn riêng, đèn phản quang/biển báo không tự phát sáng, và các mắt đèn nhỏ/xa kích thước dưới $12 \times 12\text{ px}$.
+- **Geometry tolerance:** Box ôm sát phần vỏ đèn nhìn thấy được, lệch $\le 2\text{ px}$ mỗi cạnh là đạt; không vẽ thừa ra phần chân đế hoặc dây treo.
 
 ## Output chấm được
 
-TODO — loại decision nào sẽ có trong blind test: LABEL / IGNORE / UNKNOWN / ESCALATE, class, attribute, geometry.
-Mỗi loại phải nhìn thấy được trong file export CVAT, nếu không thì không chấm được.
+Trong file export CVAT (định dạng Datumaro / CVAT XML), mọi quyết định được phản ánh qua:
+- **LABEL:** Class `traffic_light` kèm đầy đủ 3 attributes (`state`, `relevance`, `shape`).
+- **IGNORE:** Không vẽ Bounding Box cho các đối tượng thuộc "Ngoài scope".
+- **UNKNOWN:** Class `traffic_light` với attribute `state = off_or_unk`.
+- **ESCALATE:** Class `traffic_light` với attribute `relevance = ambiguous`.
 
 ## Dữ liệu và giới hạn
 
-TODO — nguồn ảnh, số ảnh dự kiến dùng, giới hạn đã biết (ví dụ LISA trong repo chỉ có một clip 30 frame liên tiếp).
