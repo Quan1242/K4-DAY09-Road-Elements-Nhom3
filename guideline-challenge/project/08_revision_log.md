@@ -9,3 +9,4 @@ Cột Version ghi dạng `v1`, `v2`, `v3` — `make status` tìm dòng bảng c�
 | Version | Đổi gì | Vì sao | Bằng chứng |
 |---|---|---|---|
 | v1 | Khởi tạo bản nháp guideline ban đầu với đầy đủ 10 mục bắt buộc cho bài toán Traffic Light State & Ego-Relevance | Thiết lập scope, ontology, và các quy tắc gán nhãn chuyển giao được trước khi calibration | Thảo luận thiết kế nhóm và downstream contract tại `01_problem_statement.md` |
+| v2 | Bổ sung trạng thái `wait on` và `unknow`; đồng bộ quy tắc UNKNOWN và trường hợp lóa sáng với `unknow` | Cập nhật taxonomy trạng thái theo yêu cầu và tránh dùng giá trị `off_or_unk` không có trong danh sách nhãn | Yêu cầu cập nhật guideline; chưa có sample_id calibration kèm theo |

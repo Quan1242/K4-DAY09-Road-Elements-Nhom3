@@ -1,6 +1,6 @@
 # Annotation guideline — Traffic Light State & Ego-Relevance
 
-**Version:** v1
+**Version:** v2
 
 ## 1. Objective + scope
 
@@ -40,7 +40,8 @@ Cấu trúc taxonomy gồm 1 Class duy nhất và 3 thuộc tính (Attributes) b
 - `yellow`: Đèn đang bật bóng vàng (chuẩn bị dừng / chuyển pha).
 - `green`: Đèn đang bật bóng xanh (được phép di chuyển).
 - `off`: Cả cụm đèn không sáng bóng nào (đèn tắt do hỏng hoặc ngắt điện).
-- `unknown`: Không xác định được.
+- `wait on`: đèn chờ.
+- `unknow` : không xác định được
 - *Default:* `off`.
 
 ### Attribute 2: `relevance` (Độ liên quan đối với làn xe chủ)
@@ -79,14 +80,14 @@ Cấu trúc taxonomy gồm 1 Class duy nhất và 3 thuộc tính (Attributes) b
 - **Bị cắt ở mép ảnh (Truncation):** Nếu đầu đèn bị viền ảnh cắt ngang, vẽ box ôm sát phần nằm bên trong khung hình ảnh.
 - **Điều kiện ban đêm và lóa đèn (Low Visibility / Glare):**
   - Ban đêm đèn phát sáng tạo vầng hào quang (halo/glare) tỏa rộng: Bounding box phải căn theo kích thước thực tế của vỏ đèn (hoặc ước lượng kích thước bóng đèn thực tế), **không** được vẽ bao trọn toàn bộ quầng sáng lóa tỏa ra bầu trời.
-  - Nếu ánh sáng chói làm mờ hoàn toàn màu sắc: Đặt `state = off_or_unk`.
+  - Nếu ánh sáng chói làm mờ hoàn toàn màu sắc: Đặt `state = unknow`.
 
 ## 7. Ambiguity / escalation
 
 Quy định chuẩn hóa 4 mức quyết định để đảm bảo thể hiện minh bạch trong export CVAT:
 1. **LABEL:** Đủ bằng chứng hình ảnh -> Vẽ box `traffic_light` và chọn các giá trị tương ứng (`state`, `relevance`, `shape`).
 2. **IGNORE:** Không đủ điều kiện kích thước (< 10px) hoặc nằm ngoài scope -> Không tạo bounding box.
-3. **UNKNOWN:** Khi nhìn rõ cụm đèn nhưng không chắc chắn màu đèn hoặc hình dạng bóng đèn -> Chọn `state = off_or_unk` hoặc `shape = other`.
+3. **UNKNOWN:** Khi nhìn rõ cụm đèn nhưng không chắc chắn màu đèn hoặc hình dạng bóng đèn -> Chọn `state = unknow` hoặc `shape = other`.
 4. **ESCALATE / AMBIGUOUS:**
    - Nếu không xác định được đèn thuộc làn xe mình hay làn khác: Đặt `relevance = ambiguous`.
    - Nếu toàn bộ khung ảnh có vấn đề nghiêm trọng (camera hỏng, mờ mịt hoàn toàn không thể quan sát tín hiệu giao thông): Gán thẻ tag cấp ảnh `image_escalate`.
