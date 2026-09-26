@@ -2,16 +2,19 @@
 
 Điền trước phút 15. Thay mọi placeholder; còn sót thì `make status` báo ở gate G1.
 
-- **Team:** TODO (ví dụ `team07`)
+- **Team:** team03
 - **Nhóm peer test bài của mình:** TODO (cặp A ↔ B; số nhóm lẻ thì ring 3 nhóm A → B → C → A — Lab Coach công bố)
 - **Nhóm mình test bài của:** TODO
-- **Problem family:** TODO (xem README mục "1 · Chọn bài toán")
+- **Problem family:** Traffic light (state, relevance, direction)
 - **Nguồn ảnh:** TODO (`bdd100k`, `gtsdb`, `lisa` — chỉ dùng ảnh trong `data/`)
 
 | Thành viên | GitHub | Vai trò chính | File phụ trách |
 |---|---|---|---|
-| TODO | TODO | TODO | TODO |
-
+| Nguyễn Phúc Đại | @daicntt | Team Lead & Data Architect | `00_team.md`, `01_problem_statement.md` |
+| Nghiêm Việt Quân | @quannv | Guideline Specialist | `02_guideline.md`, `08_revision_log.md` |
+| Trần Anh Duẩn | @duanta | CVAT & System Admin | `03_ontology_and_cvat_setup.md`, `03_cvat_labels.json`, `sample_pack.csv`, `09_cvat_export_or_task_reference.txt` |
+| Ngô Văn Hưng | @hungnv | Gold Standard Annotator | `04_edge_cases/gold_decisions.csv`, `04_edge_cases/edge_case_cards.md` |
+| Nguyễn Thị My | @mynt | QA & Internal Auditor | `05_qa_plan.md`, `06_calibration_report.csv`, `07_blind_handoff/clarification_log.csv`, `07_blind_handoff/peer_feedback.md` |
 Gợi ý chia vai (nhóm 2–3 người thì gộp): **spec owner** (`01`, `02`), **CVAT owner** (`03_*`, `sample_pack.csv`,
 `09`), **gold owner** (`04_edge_cases/`), **QA owner** (`05`, `06`, `07_blind_handoff/`). Mỗi file một người sửa
 chính để tránh xung đột git. Calibration thì mọi người cùng label.
