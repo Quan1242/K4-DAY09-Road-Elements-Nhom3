@@ -32,7 +32,7 @@
 
 Cấu trúc taxonomy gồm 1 Class duy nhất và 3 thuộc tính (Attributes) bắt buộc:
 
-- `undefined` là giá trị dùng khi trường attribute chưa có giá trị trong dữ liệu đầu vào. Không dùng `undefined` thay cho quyết định khi đã xem ảnh: màu không rõ dùng `off_or_unk`, làn không rõ dùng `ambiguous`, hình dạng không rõ dùng `other`.
+- `undefined` là giá trị dùng khi trường attribute chưa có giá trị trong dữ liệu đầu vào. Không dùng `undefined` thay cho quyết định khi đã xem ảnh: màu/trạng thái không rõ dùng `unknown`, làn không rõ dùng `ambiguous`, hình dạng không rõ dùng `other`.
 
 ### Class: `traffic_light` (Shape: rectangle)
 
@@ -41,8 +41,9 @@ Cấu trúc taxonomy gồm 1 Class duy nhất và 3 thuộc tính (Attributes) b
 - `red`: Đèn đang bật bóng đỏ (yêu cầu dừng).
 - `yellow`: Đèn đang bật bóng vàng (chuẩn bị dừng / chuyển pha).
 - `green`: Đèn đang bật bóng xanh (được phép di chuyển).
-- `off_or_unk`: Không có bóng nào sáng hoặc không thể xác định đáng tin cậy màu/trạng thái đang sáng.
-- Chọn `off_or_unk` khi đèn tắt hoặc bằng chứng hình ảnh không đủ để xác định màu; không tự suy đoán màu.
+- `unknown`: Không thể xác định đáng tin cậy màu/trạng thái đang sáng từ bằng chứng hình ảnh.
+- `off`: Cả cụm đèn không sáng bóng nào.
+- Chọn `unknown` khi bằng chứng hình ảnh không đủ để xác định màu; không tự suy đoán. Chỉ chọn `off` khi xác định được cả cụm đèn đang tắt.
 
 ### Attribute 2: `relevance` (Độ liên quan đối với làn xe chủ)
 
@@ -81,14 +82,14 @@ Cấu trúc taxonomy gồm 1 Class duy nhất và 3 thuộc tính (Attributes) b
 - **Bị cắt ở mép ảnh (Truncation):** Nếu đầu đèn bị viền ảnh cắt ngang, vẽ box ôm sát phần nằm bên trong khung hình ảnh.
 - **Điều kiện ban đêm và lóa đèn (Low Visibility / Glare):**
   - Ban đêm đèn phát sáng tạo vầng hào quang (halo/glare) tỏa rộng: Bounding box phải căn theo kích thước thực tế của vỏ đèn (hoặc ước lượng kích thước bóng đèn thực tế), **không** được vẽ bao trọn toàn bộ quầng sáng lóa tỏa ra bầu trời.
-  - Nếu ánh sáng chói làm mờ hoàn toàn màu sắc: Đặt `state = off_or_unk`.
+  - Nếu ánh sáng chói làm mờ hoàn toàn màu sắc: Đặt `state = unknown`.
 
 ## 7. Ambiguity / escalation
 
 Quy định chuẩn hóa 4 mức quyết định để đảm bảo thể hiện minh bạch trong export CVAT:
 1. **LABEL:** Đủ bằng chứng hình ảnh -> Vẽ box `traffic_light` và chọn các giá trị tương ứng (`state`, `relevance`, `shape`).
 2. **IGNORE:** Đối tượng nằm ngoài scope hoặc nhỏ hơn 12 × 12 pixel -> Không tạo bounding box.
-3. **UNKNOWN:** Khi nhận diện được đầu đèn nhưng không thể xác định màu/trạng thái đang sáng -> Gán `state = off_or_unk`; nếu không phân biệt được hình dạng thì gán `shape = other`.
+3. **UNKNOWN:** Khi nhận diện được đầu đèn nhưng không thể xác định màu/trạng thái đang sáng -> Gán `state = unknown`; nếu không phân biệt được hình dạng thì gán `shape = other`.
 4. **ESCALATE / AMBIGUOUS:**
   - Nếu không đủ bằng chứng xác định đèn điều khiển làn nào: Đặt `relevance = ambiguous`, không đoán.
   - Downstream nhận `relevance = ambiguous` sẽ áp dụng quy tắc an toàn: giảm tốc và tăng khoảng cách an toàn.
@@ -98,15 +99,15 @@ Quy định chuẩn hóa 4 mức quyết định để đảm bảo thể hiện
 - Gán nhãn 20 ảnh có đèn giao thông từ tập S2TLD 720x1280: [Kaggle dataset](https://www.kaggle.com/datasets/sovitrath/s2tld-720x1280-traffic-light-detection-xml-format/data).
 - Mỗi ảnh được gán độc lập dưới dạng `Shape`; không áp dụng quy tắc track theo thời gian.
 - Export CVAT ở định dạng Datumaro hoặc CVAT XML. Mỗi nhãn `traffic_light` phải có đủ `state`, `relevance` và `shape`.
-- Giá trị theo contract: `state` (`undefined`, `red`, `yellow`, `green`, `off_or_unk`), `relevance` (`undefined`, `ego_lane`, `other_lane`, `ambiguous`), `shape` (`undefined`, `circle`, `arrow`, `other`).
-- Kết quả quyết định phải thể hiện được: LABEL (`traffic_light` cùng đủ attributes), IGNORE (không tạo box), UNKNOWN (`state = off_or_unk`) hoặc ESCALATE (`relevance = ambiguous`).
+- Giá trị theo contract: `state` (`undefined`, `red`, `yellow`, `green`, `unknown`, `off`), `relevance` (`undefined`, `ego_lane`, `other_lane`, `ambiguous`), `shape` (`undefined`, `circle`, `arrow`, `other`).
+- Kết quả quyết định phải thể hiện được: LABEL (`traffic_light` cùng đủ attributes), IGNORE (không tạo box), UNKNOWN (`state = unknown`) hoặc ESCALATE (`relevance = ambiguous`).
 
 ## 9. Examples
 
 Bổ sung ví dụ kèm `sample_id` sau khi chọn ảnh trong tập 20 ảnh; không tự tạo sample ID hoặc bằng chứng calibration.
 
 | sample_id | Thấy gì | Expected output | Rule áp dụng |
-|---|---|---|---|
+|000016|Thấy 3 đèn giao thông|3 box gán cho 3 cụm đèn,2 ego_lane,1 other lane|Taxonomy,Geometry rule|
 
 
 ## 10. Common mistakes
