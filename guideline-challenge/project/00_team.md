@@ -5,8 +5,8 @@
 - **Team:** team03
 - **Nhóm peer test bài của mình:** TODO (cặp A ↔ B; số nhóm lẻ thì ring 3 nhóm A → B → C → A — Lab Coach công bố)
 - **Nhóm mình test bài của:** TODO
-- **Problem family:** Traffic light (state, relevance, direction)
-- **Nguồn ảnh:** Lấy 10 mẫu ảnh từ trên mạng (https://www.kaggle.com/datasets/sovitrath/s2tld-720x1280-traffic-light-detection-xml-format/data)
+- **Problem family:** Traffic light (state, ego-lane relevance, signal shape)
+- **Nguồn ảnh:** Chỉ chọn ảnh có trong `data/catalog.csv`; ghi sample ID, split và lý do chọn trong `sample_pack.csv`.
 
 | Thành viên | GitHub | Vai trò chính | File phụ trách |
 |---|---|---|---|

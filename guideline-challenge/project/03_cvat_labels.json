@@ -24,20 +24,7 @@
         "input_type": "select",
         "default_value": "undefined",
         "values": ["undefined", "circle", "arrow", "other"]
-      },
-      {
-        "name": "needs_review",
-        "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
       }
     ]
-  },
-  {
-    "name": "image_escalate",
-    "color": "#8E24AA",
-    "type": "tag",
-    "attributes": []
   }
 ]

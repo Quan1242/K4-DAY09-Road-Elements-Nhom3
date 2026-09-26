@@ -1,6 +1,6 @@
 # Annotation guideline — Traffic Light State & Ego-Relevance
 
-**Version:** v4
+**Version:** v5
 
 ## 1. Objective + scope
 
@@ -19,6 +19,11 @@
 - **Loại đơn vị:** Bounding Box 2D dạng chữ nhật (`rectangle`) cho từng cụm đầu đèn độc lập (Instance-level).
 - **Quy tắc tách instance:** Mỗi đầu đèn vật lý có hộp vỏ (housing) riêng biệt là một instance riêng. Cột đèn có 3 đầu đèn đặt cạnh nhau (ví dụ: 1 đầu rẽ trái, 2 đầu đi thẳng) phải được gán thành 3 bounding box riêng biệt, không gộp chung vào 1 box lớn.
 - **Dạng dữ liệu:** Gán từng ảnh tĩnh bằng `Shape`; mỗi đầu đèn là một instance độc lập. Không tạo track.
+
+### Temporal rule
+
+- Mỗi ảnh là một quan sát độc lập; gán `state` theo bằng chứng trong chính ảnh đó.
+- Không suy ra state từ ảnh khác, không nội suy chuyển pha và không tạo track. Nếu màu đang bật không đọc được trong ảnh, dùng `state = unknown`.
 
 ## 3. Geometry rule
 
@@ -96,7 +101,7 @@ Quy định chuẩn hóa 4 mức quyết định để đảm bảo thể hiện
 
 ## 8. Dữ liệu và định dạng đầu ra
 
-- Gán nhãn 20 ảnh có đèn giao thông từ tập S2TLD 720x1280: [Kaggle dataset](https://www.kaggle.com/datasets/sovitrath/s2tld-720x1280-traffic-light-detection-xml-format/data).
+- Chỉ gán nhãn ảnh trong `data/` của repo; sample ID, split và lý do chọn phải khớp `project/sample_pack.csv`.
 - Mỗi ảnh được gán độc lập dưới dạng `Shape`; không áp dụng quy tắc track theo thời gian.
 - Export CVAT ở định dạng Datumaro hoặc CVAT XML. Mỗi nhãn `traffic_light` phải có đủ `state`, `relevance` và `shape`.
 - Giá trị theo contract: `state` (`undefined`, `red`, `yellow`, `green`, `unknown`, `off`), `relevance` (`undefined`, `ego_lane`, `other_lane`, `ambiguous`), `shape` (`undefined`, `circle`, `arrow`, `other`).
@@ -104,10 +109,13 @@ Quy định chuẩn hóa 4 mức quyết định để đảm bảo thể hiện
 
 ## 9. Examples
 
-Bổ sung ví dụ kèm `sample_id` sau khi chọn ảnh trong tập 20 ảnh; không tự tạo sample ID hoặc bằng chứng calibration.
+Các ví dụ dùng ảnh trong example split của `sample_pack.csv`. Chúng minh hoạ rule, không thay thế gold decisions cho blind split.
 
-| sample_id | Thấy gì | Expected output | Rule áp dụng |
-|000016|Thấy 3 đèn giao thông|3 box gán cho 3 cụm đèn,2 ego_lane,1 other lane|Taxonomy,Geometry rule|
+| Tình huống | Expected output | Rule áp dụng |
+|---|---|---|
+| `LISA01` | Đầu đèn trên cần đèn phát sáng đỏ trong ảnh chạng vạng | Gán box theo housing nhìn thấy và `state = red` cho đầu đèn đó | Geometry rule, taxonomy |
+| `LISA16` | Đầu đèn trên cần đèn phát sáng xanh ở một ảnh khác trong clip | Gán `state = green` theo riêng ảnh này; không nội suy từ frame khác | Temporal rule |
+| `LISA30` | Đèn xanh vẫn nhìn thấy ở cuối clip | Gán box cho housing; không gộp quầng sáng vào geometry | Visibility / glare, geometry rule |
 
 
 ## 10. Common mistakes

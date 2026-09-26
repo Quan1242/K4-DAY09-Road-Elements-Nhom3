@@ -1,45 +1,46 @@
 # QA plan + quality gates
 
-Không được viết "reviewer kiểm tra lại". Phải có sampling, metric, threshold và action khi fail. Thay mọi placeholder
-mới là xong (gate G6).
+This plan is for the traffic-light annotation project and uses the downstream contract in `01_problem_statement.md`. Thresholds are proposed for this small class exercise; they are not industry standards.
 
 ## Flow
 
-Guideline → Calibration → Production → Self-QC → Review → Rework → Quality Gate. Ghi cụ thể cho project của nhóm:
+Guideline → independent calibration → annotation → self-QC → risk-based review → rework → quality gate.
 
-- **Ai review, review bao nhiêu:** TODO
-- **Chọn sample theo rule nào** (random, theo tag rủi ro, theo annotator mới…): TODO
-- **Issue được ghi ở đâu, đóng thế nào:** TODO
-- **Khi phát hiện guideline gap thì update và version ra sao:** TODO
+- **Reviewers:** Nguyễn Thị My (`@nguyenmy133`) coordinates QA; rotate independent review among team members, and annotators do not review their own samples. The gold owner checks every blind decision and geometry item.
+- **Review volume:** review 100% of blind-set decisions and all cases tagged `critical`, `ambiguity`, `occlusion`, or `low_visibility`. For other annotated images, review at least 20%, with a minimum of one image per annotator.
+- **Calibration entry check:** compare only exports from the same CVAT task and label schema that contain exactly the calibration IDs in `sample_pack.csv`. Keep nonmatching exports out of the calibration report and request a corrected export.
+- **Sample selection:** choose risk-tagged samples first, then select the remaining review images across annotators and scene/time-of-day strata. Record the reason for every selected sample.
+- **Issue log:** record each defect in `05_qa_issues.csv` with sample, object, severity, evidence, owner, action, and status. A reviewer closes an issue only after checking the corrected export against the same rule.
+- **Guideline gaps:** add the rule or escalation path, update the guideline version, record the affected sample and evidence in `08_revision_log.md`, then re-review every affected sample. Do not silently resolve a domain disagreement in chat.
 
 ## Defect severity
 
-Nhóm được đổi mapping nếu downstream contract khác, nhưng phải giải thích và chốt trước khi QA.
-
-| Severity | Định nghĩa cho project này | Ví dụ | Action mặc định |
+| Severity | Definition for this project | Example | Default action |
 |---|---|---|---|
-| Critical | TODO | TODO | TODO |
-| Major | TODO | TODO | TODO |
-| Minor | TODO | TODO | TODO |
-| Question | TODO | TODO | TODO |
+| Critical | A defect can reverse the safe action for the ego lane. | Missed ego-lane red signal; wrong `relevance` that makes an ego signal appear to control another lane. | Stop handoff, correct all affected samples, and re-review the full risk slice. |
+| Major | A defect changes the object or its operational attribute, but does not meet the critical definition. | Missed/extra signal head; wrong `state` or `shape`; box edge is more than 5 px outside the housing, cuts visible housing, or merges separate heads. | Rework the sample and review adjacent decisions using the same rule. |
+| Minor | A geometry defect exceeds the 2 px tolerance by no more than 5 px and leaves the signal head and its interpretation intact. | One box edge is 3–5 px outside the visible housing boundary. | Correct the box; record if the pattern repeats. |
+| Question | Available evidence or written rules do not support a consistent decision. | A head is visible but the controlled lane cannot be established. | Use `relevance = ambiguous`; log the question and revise or escalate the rule. |
 
 ## Metrics
 
-| Metric | Cách tính | Vì sao phù hợp với bài toán |
+| Metric | Calculation | Why it fits this project |
 |---|---|---|
-| TODO | TODO | TODO |
+| Attribute exact-match rate | Correct reviewed values for `state`, `relevance`, and `shape` divided by reviewed attribute decisions. | Attribute errors change whether and how the vehicle should respond to a signal. |
+| Geometry pass rate | Reviewed boxes with every visible-housing edge within 2 px divided by reviewed boxes. | The guideline defines an explicit edge tolerance. |
+| Critical escape rate | Critical defects remaining after rework divided by critical defects found before rework. | Any remaining ego-lane signal error can cause a high-consequence downstream failure. |
 
-Metric high-risk tách riêng (ví dụ critical defect escape rate): TODO
+Review all critical-risk decisions; do not estimate this metric from a random sample.
 
 ## Quality gate
 
-Threshold là đề xuất của nhóm, không phải chuẩn ngành. Giải thích trade-off cost/risk.
-
 ```text
 PASS if:
-  TODO
-REWORK if: TODO
-REJECT / ESCALATE if: TODO
+  critical escape rate = 0 after rework
+  attribute exact-match rate >= 95% on the reviewed batch
+  geometry pass rate >= 95% on the reviewed batch
+REWORK if: any metric misses its threshold and the decision can be corrected from the current guideline.
+REJECT / ESCALATE if: a critical decision remains wrong, evidence is insufficient, or annotators cannot reach one decision from the written rule.
 ```
 
-Trade-off: TODO
+**Trade-off:** the sample pack is small, so risk slices receive complete review while a 20% floor keeps normal cases represented without spending the whole lab on review. Zero critical escapes is intentionally strict because the stated use case includes automated braking and behavior planning. The 95% noncritical thresholds allow limited execution mistakes while requiring correction and a documented cause.

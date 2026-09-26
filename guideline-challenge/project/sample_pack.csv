@@ -1,1 +1,13 @@
 sample_id,split,tags,reason
+LISA01,example,normal;temporal,Visible vehicle signal heads at dusk; use to demonstrate boxes around housing and image-local state.
+LISA16,example,normal;temporal,The overhead vehicle signal is green after a phase change; use to show that each still gets its own state.
+LISA30,example,normal;temporal,Late-clip green signal example; compare only the visible head in this frame.
+LISA05,calibration,normal;temporal,Early red-phase frame for independent label agreement.
+LISA10,calibration,normal;temporal,Red-phase frame at a different point in the clip.
+LISA22,calibration,edge;temporal,Green-phase frame in the dusk sequence; checks state and small distant heads.
+LISA24,calibration,edge;temporal,Later green-phase frame for independent geometry and attribute agreement.
+LISA27,calibration,normal;temporal,Later green-phase frame, separated from the example transition frame.
+BDD02,blind,normal;conflict,Daytime city intersection with multiple visible signal heads; tests instance separation and ego-lane relevance.
+BDD18,blind,edge;low_visibility;ambiguity,Night street with distant bright signals; tests glare handling and uncertain state or lane assignment.
+BDD25,blind,edge;low_visibility,Wet low-light city scene with several signals; tests housing boundaries and relevance under reflections.
+BDD26,blind,critical;ambiguity;conflict,Night scene with neighboring green and red signal heads; tests separate instances and high-risk lane relevance.

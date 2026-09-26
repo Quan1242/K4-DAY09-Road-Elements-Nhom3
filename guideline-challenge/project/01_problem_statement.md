@@ -30,8 +30,8 @@ Gán nhãn Bounding Box 2D và Attributes cho các đầu đèn giao thông (Tra
 Trong file export CVAT (định dạng Datumaro / CVAT XML), mọi quyết định được phản ánh qua:
 - **LABEL:** Class `traffic_light` kèm đầy đủ 3 attributes (`state`, `relevance`, `shape`).
 - **IGNORE:** Không vẽ Bounding Box cho các đối tượng thuộc "Ngoài scope".
-- **UNKNOWN:** Class `traffic_light` với attribute `state = off_or_unk`.
+- **UNKNOWN:** Class `traffic_light` với attribute `state = unknown`.
 - **ESCALATE:** Class `traffic_light` với attribute `relevance = ambiguous`.
 
 ## Dữ liệu và giới hạn
-Sử dụng 10 trong số 20 ảnh có đèn giao thông từ nguồn (https://www.kaggle.com/datasets/sovitrath/s2tld-720x1280-traffic-light-detection-xml-format/data) 
+Chỉ sử dụng ảnh đã có trong `data/` và liệt kê trong `project/sample_pack.csv`. Không dùng ảnh ngoài repo. Sample pack ghi rõ example, calibration và blind split cùng lý do chọn từng ảnh.
