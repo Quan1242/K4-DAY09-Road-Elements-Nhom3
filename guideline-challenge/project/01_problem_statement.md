@@ -13,7 +13,7 @@ Gán nhãn Bounding Box 2D và Attributes cho các đầu đèn giao thông (Tra
 2. **Output annotation nào thực sự cần?**
    - Geometry: 2D Bounding Box ôm sát phần vỏ thấy được của đầu đèn.
    - Class: `traffic_light`
-   - Attributes: `state` (`red` / `yellow` / `green` / `off_or_unk`), `relevance` (`ego_lane` / `other_lane` / `ambiguous`), `shape` (`circle` / `arrow` / `other`).
+   - Attributes: `state` (`undefined`/`red` / `yellow` / `green` / `off_or_unk`), `relevance` (`undefined`/`ego_lane` / `other_lane` / `ambiguous`), `shape` (`undefined`/`circle` / `arrow` / `other`).
 3. **Failure nào gây hậu quả lớn nhất?**
    - Gán nhãn `relevance = ego_lane` cho đèn rẽ trái đang đỏ trong khi xe chủ đi thẳng đang có đèn xanh riêng $\rightarrow$ Xe phanh gấp giữa giao lộ gây tai nạn phía sau.
    - Bỏ sót (Missed detection) hoặc gán `relevance = other_lane` cho đèn `ego_lane` đang đỏ $\rightarrow$ Xe lao vào giao lộ gây tai nạn trực diện (Critical Escape).
