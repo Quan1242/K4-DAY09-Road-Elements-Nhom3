@@ -8,3 +8,4 @@ Cột Version ghi dạng `v1`, `v2`, `v3` — `make status` tìm dòng bảng c�
 
 | Version | Đổi gì | Vì sao | Bằng chứng |
 |---|---|---|---|
+| v1 | Khởi tạo bản nháp guideline ban đầu với đầy đủ 10 mục bắt buộc cho bài toán Traffic Light State & Ego-Relevance | Thiết lập scope, ontology, và các quy tắc gán nhãn chuyển giao được trước khi calibration | Thảo luận thiết kế nhóm và downstream contract tại `01_problem_statement.md` |
